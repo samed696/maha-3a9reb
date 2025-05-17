@@ -55,9 +55,10 @@ class OrderController extends Controller
         }
 
         // Clear cart and applied coupon
-        session()->forget(['cart', 'applied_coupon']);
+        session()->forget(['cart', 'coupon']);
 
-        return redirect()->route('cart.index')->with('success', 'Commande passée !');
+        // Redirect to user's orders page with success message
+        return redirect()->route('user.orders')->with('success', 'Commande passée !');
     }
 
     public function show(Order $order)
