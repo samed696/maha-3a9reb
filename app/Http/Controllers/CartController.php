@@ -13,7 +13,28 @@ class CartController extends Controller
     public function index()
     {
         $cart = session()->get('cart', []);
-        return view('cart.index', compact('cart'));
+        $appliedCoupon = session()->get('coupon'); // unify session key usage
+
+        // Calculate subtotal
+        $subtotal = 0;
+        foreach ($cart as $item) {
+            $subtotal += $item['price'] * $item['quantity'];
+        }
+
+        // Calculate discount
+        $discount = 0;
+        if ($appliedCoupon) {
+            if ($appliedCoupon['type'] === 'fixed') {
+                $discount = $appliedCoupon['value'];
+            } elseif ($appliedCoupon['type'] === 'percent') {
+                $discount = ($appliedCoupon['value'] / 100) * $subtotal;
+            }
+        }
+
+        // Calculate total after discount
+        $total = $subtotal - $discount;
+
+        return view('cart.index', compact('cart', 'appliedCoupon', 'subtotal', 'discount', 'total'));
     }
 
     public function addToCart($id)

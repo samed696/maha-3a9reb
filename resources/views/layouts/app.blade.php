@@ -80,6 +80,15 @@
                         <li class="nav-item" data-aos="fade-right"><a class="nav-link" href="{{ route('products.index') }}">Products</a></li>
                         <li class="nav-item" data-aos="fade-right"><a class="nav-link" href="{{ route('cart.index') }}">Cart</a></li>
                         <li class="nav-item" data-aos="fade-right"><a class="nav-link" href="{{ route('wishlist.index') }}">Wishlist</a></li>
+                        @auth
+                            @if(Auth::user()->is_admin)
+                                <li class="nav-item" data-aos="fade-right"><a class="nav-link" href="{{ route('admin.dashboard') }}">Admin Dashboard</a></li>
+                                <li class="nav-item" data-aos="fade-right"><a class="nav-link" href="{{ route('coupons.index') }}">Manage Coupons</a></li>
+                            @else
+                                <li class="nav-item" data-aos="fade-right"><a class="nav-link" href="{{ route('user.profile') }}">My Profile</a></li>
+                                <li class="nav-item" data-aos="fade-right"><a class="nav-link" href="{{ route('user.orders') }}">My Orders</a></li>
+                            @endif
+                        @endauth
                     </ul>
                     <ul class="navbar-nav ms-auto">
                         @guest

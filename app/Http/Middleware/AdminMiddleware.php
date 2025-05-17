@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Middleware;
 
 use Closure;
@@ -7,14 +8,19 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminMiddleware
 {
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
+     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+     */
     public function handle(Request $request, Closure $next)
     {
-        // Vérifie si l'utilisateur est connecté et s'il est admin
         if (Auth::check() && Auth::user()->is_admin) {
-            return $next($request); // Continuer vers la page demandée
+            return $next($request);
         }
 
-        // Sinon, rediriger vers l'accueil
-        return redirect('/');
+        abort(403, 'Unauthorized access.');
     }
 }

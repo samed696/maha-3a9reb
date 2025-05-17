@@ -24,8 +24,13 @@ class OrderController extends Controller
 
         // Apply coupon discount if exists
         $discount = 0;
-        if (session('applied_coupon')) {
-            $discount = session('applied_coupon')->calculateDiscount($subtotal);
+        if (session('coupon')) {
+            $coupon = session('coupon');
+            if ($coupon['type'] === 'fixed') {
+                $discount = $coupon['value'];
+            } elseif ($coupon['type'] === 'percent') {
+                $discount = ($coupon['value'] / 100) * $subtotal;
+            }
         }
 
         // Calculate final total
@@ -53,5 +58,18 @@ class OrderController extends Controller
         session()->forget(['cart', 'applied_coupon']);
 
         return redirect()->route('cart.index')->with('success', 'Commande passée !');
+    }
+
+    public function show(Order $order)
+    {
+        // Ensure the authenticated user owns the order
+        if ($order->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Load order items and related product details
+        $order->load('items.product');
+
+        return view('orders.show', compact('order'));
     }
 }

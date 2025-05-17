@@ -5,6 +5,7 @@
 
 <div class="mb-4">
     <a href="{{ route('coupons.index') }}" class="btn btn-primary">📦 Gérer les coupons</a>
+    <a href="{{ route('coupons.create') }}" class="btn btn-success">➕ Ajouter un coupon</a>
     <a href="{{ route('admin.notifications') }}" class="btn btn-secondary">🔔 Voir les notifications</a>
 </div>
 

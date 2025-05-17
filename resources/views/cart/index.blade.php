@@ -42,22 +42,6 @@
             </tbody>
         </table>
 
-        @php
-            $subtotal = 0;
-            foreach($cart as $item) {
-                $subtotal += $item['price'] * $item['quantity'];
-            }
-
-            // Calculating the discount if a coupon is applied
-            $discount = 0;
-            if(session('applied_coupon')) {
-                $discount = session('applied_coupon')->calculateDiscount($subtotal);
-            }
-
-            // Final total after applying discount
-            $total = $subtotal - $discount;
-        @endphp
-
         <div class="row mt-4">
             <div class="col-md-6">
                 <!-- Order Summary -->

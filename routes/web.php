@@ -10,7 +10,10 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\AdminDashboardController;
+
 use App\Http\Controllers\CouponController;
+use App\Http\Controllers\UserController;
+
 
 
 /*
@@ -59,7 +62,12 @@ Route::middleware(['auth'])->group(function () {
     Route::post('wishlist/{product}', [WishlistController::class, 'add'])->name('wishlist.add');
     Route::delete('wishlist/{product}', [WishlistController::class, 'remove'])->name('wishlist.remove');
     Route::get('wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
-Route::post('/cart/apply-coupon', [CartController::class, 'applyCoupon'])->name('cart.applyCoupon');
+    Route::post('/cart/apply-coupon', [CartController::class, 'applyCoupon'])->name('cart.applyCoupon');
 
     Route::post('reviews/{product}', [ReviewController::class, 'store'])->name('reviews.store');
+
+    // Add user profile and orders routes
+    Route::get('/user/profile', [UserController::class, 'profile'])->name('user.profile');
+    Route::get('/user/orders', [UserController::class, 'orders'])->name('user.orders');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 });
