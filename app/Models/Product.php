@@ -11,7 +11,7 @@ class Product extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'price', 'image_url', 'category_id'];
+    protected $fillable = ['name', 'description', 'price', 'image_url', 'category_id', 'stock'];
 
     // Define the relationship with the 'OrderItem' model
     public function orderItems()

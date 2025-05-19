@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -78,13 +79,21 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
-            'image_url' => 'nullable|url',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'category_id' => 'nullable|exists:categories,id',
+            'stock' => 'required|integer|min:0',
             'rating' => 'nullable|numeric|min:0|max:5',
             'sales_count' => 'nullable|integer|min:0',
         ]);
 
-        Product::create($request->all());
+        $data = $request->all();
+        
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('products', 'public');
+            $data['image_url'] = $imagePath;
+        }
+
+        Product::create($data);
 
         return redirect()->route('products.index')->with('success', 'Produit ajouté avec succès !');
     }
@@ -109,13 +118,26 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
-            'image_url' => 'nullable|url',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'category_id' => 'nullable|exists:categories,id',
+            'stock' => 'required|integer|min:0',
             'rating' => 'nullable|numeric|min:0|max:5',
             'sales_count' => 'nullable|integer|min:0',
         ]);
 
-        $product->update($request->all());
+        $data = $request->all();
+        
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($product->image_url) {
+                Storage::disk('public')->delete($product->image_url);
+            }
+            
+            $imagePath = $request->file('image')->store('products', 'public');
+            $data['image_url'] = $imagePath;
+        }
+
+        $product->update($data);
 
         return redirect()->route('products.index')->with('success', 'Produit mis à jour avec succès !');
     }

@@ -73,4 +73,13 @@ class OrderController extends Controller
 
         return view('orders.show', compact('order'));
     }
+
+    public function index()
+    {
+        $orders = Order::with(['user', 'items.product'])
+            ->latest()
+            ->paginate(10);
+
+        return view('admin.orders.index', compact('orders'));
+    }
 }

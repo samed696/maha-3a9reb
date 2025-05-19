@@ -29,17 +29,13 @@ use App\Http\Controllers\UserController;
 
 // Admin routes
 Route::middleware(['admin'])->group(function () {
+    Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('/admin/notifications', [AdminDashboardController::class, 'notifications'])->name('admin.notifications');
+    Route::get('/admin/orders', [OrderController::class, 'index'])->name('admin.orders');
     Route::resource('products', ProductController::class)->except(['show']);
     Route::resource('categories', CategoryController::class)->except(['store']);
     Route::resource('coupons', CouponController::class);
-    Route::post('/coupons', [CouponController::class, 'store'])->name('coupons.store');
     Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
-
-    Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
-    
-    Route::get('/admin/notifications', function () {
-        return view('admin.notifications');
-    })->name('admin.notifications');
 });
 
 // Public store for categories
@@ -47,6 +43,7 @@ Route::post('/categories', [CategoryController::class, 'store'])->middleware('au
 
 // Public routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
 
 Auth::routes();
@@ -69,5 +66,10 @@ Route::middleware(['auth'])->group(function () {
     // Add user profile and orders routes
     Route::get('/user/profile', [UserController::class, 'profile'])->name('user.profile');
     Route::get('/user/orders', [UserController::class, 'orders'])->name('user.orders');
+    Route::get('/user/settings', [UserController::class, 'settings'])->name('user.settings');
+    Route::post('/user/settings', [UserController::class, 'updateSettings'])->name('user.settings.update');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 });
+
+// Product Reviews Routes
+Route::post('/products/{product}/reviews', [App\Http\Controllers\ReviewController::class, 'store'])->name('products.reviews.store');

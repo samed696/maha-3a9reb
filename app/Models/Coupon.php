@@ -8,7 +8,21 @@ use Illuminate\Database\Eloquent\Model;
 class Coupon extends Model
 {
     protected $fillable = [
-        'code', 'type', 'value', 'expiry_date', '_token'
+        'code',
+        'description',
+        'type',
+        'value',
+        'min_purchase',
+        'usage_limit',
+        'expires_at',
+        'is_active'
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
+        'expires_at' => 'datetime',
+        'min_purchase' => 'decimal:2',
+        'value' => 'decimal:2'
     ];
 
     /**

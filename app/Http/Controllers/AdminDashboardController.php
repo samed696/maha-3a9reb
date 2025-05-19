@@ -37,11 +37,24 @@ class AdminDashboardController extends Controller
             ->orderBy('month')
             ->get();
 
-        // Top 5 best selling products (bonus)
+        // Top 5 best selling products
         $topProducts = Product::withCount(['orderItems as total_sold' => function ($query) {
             $query->select(DB::raw('SUM(quantity)'));
         }])->orderByDesc('total_sold')->limit(5)->get();
 
-        return view('admin.dashboard', compact('totalOrders', 'totalRevenue', 'totalUsers', 'salesDaily', 'salesWeekly', 'salesMonthly', 'topProducts'));
+        return view('admin.dashboard', compact(
+            'totalOrders',
+            'totalRevenue',
+            'totalUsers',
+            'salesDaily',
+            'salesWeekly',
+            'salesMonthly',
+            'topProducts'
+        ));
+    }
+
+    public function notifications()
+    {
+        return view('admin.notifications');
     }
 }

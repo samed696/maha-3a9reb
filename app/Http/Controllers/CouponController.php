@@ -14,8 +14,8 @@ class CouponController extends Controller
      */
    public function index()
 {
-    $coupons = Coupon::all(); // استرجاع جميع الكوبونات من قاعدة البيانات
-    return view('coupons.index', compact('coupons'));
+    $coupons = Coupon::latest()->paginate(10);
+    return view('admin.coupons.index', compact('coupons'));
 }
 
 
@@ -26,7 +26,7 @@ class CouponController extends Controller
      */
   public function create()
 {
-    return view('create_coupon'); // اسم ملف الـ Blade بدون .blade.php
+    return view('admin.coupons.create');
 }
 
 
@@ -40,19 +40,27 @@ public function store(Request $request)
 {
     $request->validate([
         'code' => 'required|unique:coupons,code',
+        'description' => 'nullable|string',
         'type' => 'required|in:fixed,percent',
         'value' => 'required|numeric|min:0',
-        'expiry_date' => 'nullable|date'
+        'min_purchase' => 'nullable|numeric|min:0',
+        'usage_limit' => 'nullable|integer|min:0',
+        'expires_at' => 'nullable|date',
+        'is_active' => 'boolean'
     ]);
 
     Coupon::create([
         'code' => $request->code,
+        'description' => $request->description,
         'type' => $request->type,
         'value' => $request->value,
-        'expiry_date' => $request->expiry_date
+        'min_purchase' => $request->min_purchase,
+        'usage_limit' => $request->usage_limit,
+        'expires_at' => $request->expires_at,
+        'is_active' => $request->boolean('is_active')
     ]);
 
-    return redirect()->back()->with('success', 'Coupon ajouté avec succès');
+    return redirect()->route('coupons.index')->with('success', 'Coupon created successfully');
 }
 
 
@@ -76,7 +84,8 @@ public function store(Request $request)
      */
     public function edit($id)
     {
-        //
+        $coupon = Coupon::findOrFail($id);
+        return view('admin.coupons.edit', compact('coupon'));
     }
 
     /**
@@ -88,7 +97,30 @@ public function store(Request $request)
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'code' => 'required|unique:coupons,code,' . $id,
+            'description' => 'nullable|string',
+            'type' => 'required|in:fixed,percent',
+            'value' => 'required|numeric|min:0',
+            'min_purchase' => 'nullable|numeric|min:0',
+            'usage_limit' => 'nullable|integer|min:0',
+            'expires_at' => 'nullable|date',
+            'is_active' => 'boolean'
+        ]);
+
+        $coupon = Coupon::findOrFail($id);
+        $coupon->update([
+            'code' => $request->code,
+            'description' => $request->description,
+            'type' => $request->type,
+            'value' => $request->value,
+            'min_purchase' => $request->min_purchase,
+            'usage_limit' => $request->usage_limit,
+            'expires_at' => $request->expires_at,
+            'is_active' => $request->boolean('is_active')
+        ]);
+
+        return redirect()->route('coupons.index')->with('success', 'Coupon updated successfully');
     }
 
     /**
@@ -99,6 +131,8 @@ public function store(Request $request)
      */
     public function destroy($id)
     {
-        //
+        $coupon = Coupon::findOrFail($id);
+        $coupon->delete();
+        return redirect()->route('coupons.index')->with('success', 'Coupon deleted successfully');
     }
 }
