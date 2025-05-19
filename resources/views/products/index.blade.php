@@ -46,7 +46,18 @@
                     @foreach ($products as $product)
                         <tr class="hover:bg-gray-800/50 transition-colors duration-300">
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-white">{{ $product->name }}</div>
+                                @if($product->image)
+                                    <img src="{{ asset('storage/'.$product->image) }}" alt="{{ $product->name }}" class="h-12 w-12 object-cover rounded-lg inline-block mr-2 align-middle">
+                                @else
+                                    <span class="inline-block h-12 w-12 bg-gray-700 rounded-lg mr-2 align-middle flex items-center justify-center">
+                                        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <rect x="3" y="7" width="18" height="13" rx="2" fill="#374151"/>
+                                            <path d="M8 17l2.5-3.5a2 2 0 013 0L16 17" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <circle cx="8.5" cy="11.5" r="1.5" fill="#9CA3AF"/>
+                                        </svg>
+                                    </span>
+                                @endif
+                                <span class="text-sm font-medium text-white align-middle">{{ $product->name }}</span>
                             </td>
                             <td class="px-6 py-4">
                                 <div class="text-sm text-gray-400">{{ Str::limit($product->description, 100) }}</div>
